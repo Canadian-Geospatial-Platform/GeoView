@@ -43,9 +43,7 @@ function Map(props: MapProps): JSX.Element {
             maxBounds={mapOptions.maxBounds}
             whenCreated={(cgpMap) => {
                 // reset the view when created so overviewmap is moved at the right place
-                setTimeout(() => {
-                    cgpMap.setView(center, zoom);
-                }, 0);
+                cgpMap.setView(center, zoom);
 
                 // TODO: put this a t the right place. This is temporary to show we can add different layer type to the map
                 const layer = new Layer();
