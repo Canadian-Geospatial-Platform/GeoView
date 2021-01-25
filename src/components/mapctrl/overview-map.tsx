@@ -1,12 +1,107 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 
-import { Map, CRS, DomEvent } from 'leaflet';
+import { useTranslation } from 'react-i18next';
+
+import { makeStyles } from '@material-ui/core/styles';
+import { IconButton } from '@material-ui/core';
+import LaunchIcon from '@material-ui/icons/Launch';
+
+import L, { Map, CRS, DomEvent } from 'leaflet';
 import { MapContainer, TileLayer, useMap, useMapEvent } from 'react-leaflet';
 import { useEventHandlers } from '@react-leaflet/core';
 
 import { BasemapOptions } from '../../common/basemap';
 
 import { LEAFLET_POSITION_CLASSES } from '../../common/constant';
+import api, { EVENT_NAMES } from '../../api/api';
+
+const MINIMAP_SIZE = {
+    width: '150px',
+    height: '150px',
+};
+
+const TOGGLE_BTN_SIZE = {
+    width: '31px',
+    height: '31px',
+};
+
+const useStyles = makeStyles((theme) => ({
+    toggleBtn: {
+        width: TOGGLE_BTN_SIZE.width,
+        height: TOGGLE_BTN_SIZE.height,
+        transform: 'scale(1)',
+        color: theme.palette.primary.contrastText,
+    },
+    minimapOpen: {
+        transform: 'rotate(-180deg)',
+    },
+    minimapClosed: {
+        transform: 'rotate(0)',
+    },
+    minimap: {
+        width: MINIMAP_SIZE.width,
+        height: MINIMAP_SIZE.height,
+        '-webkit-transition': '300ms linear',
+        '-moz-transition': '300ms linear',
+        '-o-transition': '300ms linear',
+        '-ms-transition': '300ms linear',
+        transition: '300ms linear',
+    },
+}));
+
+function MinimapToggle(): JSX.Element {
+    const divRef = useRef(null);
+
+    const { t } = useTranslation();
+
+    const [status, setStatus] = useState<boolean>(true);
+
+    const minimap = useMap();
+
+    const classes = useStyles();
+
+    /**
+     * Toggle overview map to show or hide it
+     * @param e the event being triggered on click
+     */
+    function toggleMinimap(e): void {
+        setStatus(!status);
+
+        if (status) {
+            // decrease size of overview map to the size of the toggle btn
+            minimap.getContainer().style.width = TOGGLE_BTN_SIZE.width;
+            minimap.getContainer().style.height = TOGGLE_BTN_SIZE.height;
+        } else {
+            // restore the size of the overview map
+            minimap.getContainer().style.width = MINIMAP_SIZE.width;
+            minimap.getContainer().style.height = MINIMAP_SIZE.height;
+        }
+
+        // trigger a new event when overview map is toggled
+        api.emit(EVENT_NAMES.EVENT_OVERVIEW_MAP_TOGGLE, null, {
+            status,
+        });
+    }
+
+    useEffect(() => {
+        L.DomEvent.disableClickPropagation(divRef.current);
+    }, []);
+
+    return (
+        <div ref={divRef} className={LEAFLET_POSITION_CLASSES.topright}>
+            <IconButton
+                className={['leaflet-control', classes.toggleBtn, !status ? classes.minimapOpen : classes.minimapClosed].join(' ')}
+                style={{
+                    margin: 0,
+                }}
+                aria-label={t('mapctrl.overviewmap.toggle')}
+                onClick={toggleMinimap}
+            >
+                <LaunchIcon />
+            </IconButton>
+        </div>
+    );
+}
 
 function MinimapBounds(props: MiniboundProps) {
     const { parentMap, zoomFactor } = props;
@@ -40,6 +135,16 @@ function MinimapBounds(props: MiniboundProps) {
 
     useEffect(() => {
         updateMap();
+
+        // listen to API event when the overview map is toggled
+        api.on(EVENT_NAMES.EVENT_OVERVIEW_MAP_TOGGLE, (payload) => {
+            updateMap();
+        });
+
+        // remove the listener when the component unmounts
+        return () => {
+            api.off(EVENT_NAMES.EVENT_OVERVIEW_MAP_TOGGLE);
+        };
     }, []);
 
     const onChange = useCallback(() => {
@@ -71,6 +176,8 @@ function MinimapBounds(props: MiniboundProps) {
 export function OverviewMap(props: OverviewProps): JSX.Element {
     const { crs, basemaps, zoomFactor } = props;
 
+    const classes = useStyles();
+
     const parentMap = useMap();
     const mapZoom = parentMap.getZoom() - zoomFactor > 0 ? parentMap.getZoom() - zoomFactor : 0;
 
@@ -78,7 +185,7 @@ export function OverviewMap(props: OverviewProps): JSX.Element {
     const minimap = useMemo(
         () => (
             <MapContainer
-                style={{ height: 150, width: 150 }}
+                className={classes.minimap}
                 center={parentMap.getCenter()}
                 zoom={mapZoom}
                 crs={crs}
@@ -96,6 +203,7 @@ export function OverviewMap(props: OverviewProps): JSX.Element {
                     <TileLayer key={base.id} url={base.url} />
                 ))}
                 <MinimapBounds parentMap={parentMap} zoomFactor={zoomFactor} />
+                <MinimapToggle parentMap={parentMap} />
             </MapContainer>
         ),
         [parentMap, crs, mapZoom, basemaps, zoomFactor]
