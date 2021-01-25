@@ -42,7 +42,6 @@
     "axios": "^0.21.0",
     "esri-leaflet": "2.5.1",
     "esri-leaflet-renderers": "2.0.6",
-    "eventemitter3": "^4.0.7",
     "i18next": "19.8.4",
     "i18next-http-backend": "1.0.21",
     "immutable": "^4.0.0-rc.12",
