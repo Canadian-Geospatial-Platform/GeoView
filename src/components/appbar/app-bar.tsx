@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
     },
     githubSection: {
-        paddingBottom: theme.spacing(13),
+        // paddingBottom: theme.spacing(13),
     },
 }));
 
