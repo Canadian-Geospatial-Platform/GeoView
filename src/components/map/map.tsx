@@ -15,7 +15,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { MapOptions, getMapOptions } from '../../common/map';
 import { Basemap, BasemapOptions } from '../../common/basemap';
-import { Layer, LayerConfig } from '../../common/layer';
+import { LayerConfig } from '../../common/layers/layer';
+import { WMS } from '../../common/layers/wms';
+import { EsriFeature } from '../../common/layers/esri-feature';
+import { EsriDynamic } from '../../common/layers/esri-dynamic';
+import { GeoJSON } from '../../common/layers/geojson';
+
 import { Projection } from '../../common/projection';
 
 import { MousePosition } from '../mapctrl/mouse-position';
@@ -82,19 +87,29 @@ function Map(props: MapProps): JSX.Element {
             maxZoom={mapOptions.maxZooom}
             maxBounds={mapOptions.maxBounds}
             whenCreated={(cgpMap) => {
+                // initialize the geojson object
+                const geoJSONLayer = new GeoJSON(cgpMap);
+
                 // reset the view when created so overview map is moved at the right place
                 cgpMap.setView(center, zoom);
 
                 // TODO: put this a t the right place. This is temporary to show we can add different layer type to the map
-                const layer = new Layer();
                 const createdLayers = [];
                 layers?.forEach((item) => {
                     if (item.type === 'ogcWMS') {
+                        const layer = new WMS();
+
                         createdLayers.push(layer.addWMS(cgpMap, item));
                     } else if (item.type === 'esriFeature') {
+                        const layer = new EsriFeature();
+
                         createdLayers.push(layer.addEsriFeature(cgpMap, item));
                     } else if (item.type === 'esriDynamic') {
+                        const layer = new EsriDynamic();
+
                         createdLayers.push(layer.addEsriDynamic(cgpMap, item));
+                    } else if (item.type === 'geoJSON') {
+                        geoJSONLayer.add(item.url);
                     }
                 });
 

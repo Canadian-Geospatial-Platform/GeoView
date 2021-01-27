@@ -15,6 +15,10 @@ export const EVENT_NAMES = {
      * Event triggered when a drawer opens/closes
      */
     EVENT_DRAWER_OPEN_CLOSE: 'drawer/open_close',
+    /**
+     * Event triggered when adding a new geojson layer
+     */
+    EVENT_GEOJSON_ADD: 'geojson/add',
 };
 
 /**
