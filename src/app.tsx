@@ -24,10 +24,13 @@ Marker.prototype.options.icon = DefaultIcon;
 /**
  * initialize the cgpv and render it to root element
  */
-function init() {
+function init(callback: () => void) {
     const root = document.createElement('div');
     root.setAttribute('id', 'root');
     document.body.appendChild(root);
+
+    // set the API callback if a callback is provided
+    if (callback) api.readyCallback = callback;
 
     ReactDOM.render(<AppStart />, document.getElementById('root'));
 }
