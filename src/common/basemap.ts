@@ -1,35 +1,77 @@
+/* eslint-disable lines-between-class-members */
 /**
- * A class to get a basemap for a define projection. For the moment, we a  Web Mercator and a LCC basemap.
+ * A class to get a BasemapGroup for a define projection. For the moment, we a  Web Mercator and a LCC basemap.
  * We intend to have only one basemap per projection to avoid the need of a basemap switcher.
  * If we add a new projection, we need to also add a basemap.
  *
  * @export
- * @class Basemap
+ * @class BasemapGroup
  */
-export class Basemap {
+export class BasemapGroup {
     private language = '';
-    private basemapID='';
 
-    constructor(language: string , basemapID:string ) {
+    private basemapID = '';
+    private shaded: boolean;
+
+    private labeled: boolean;
+    private crsID: number;
+    private basemaps: BasemapOptions[];
+
+    constructor(language: string, basemapID: string, crsID: number, shaded: boolean, labeled: boolean) {
         this.language = language;
-        this.basemapID=basemapID;
-    };
+        this.basemapID = basemapID;
+        this.shaded = shaded;
+        this.labeled = labeled;
+        this.crsID = crsID;
+        this.basemaps = this.Buildbasemapgroup;
+    }
 
-  
-    // LCC url arrays {'ID', 'WMTS Geometry URL', 'WMTS Label URL'}
-    private lccUrls:Basemapurl[] =   [
-        { 'id': '', 'urlGeom': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBME_CBCE_HS_RO_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg'},
-        { 'id': '3978-SHADED', 'urlGeom': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBME_CBCE_HS_RO_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg'},
-        { 'id': '3978-CBMT', 'urlGeom': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBMT_CBCT_GEOM_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg'},
-        { 'id': '3978-SIMPLE', 'urlGeom': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/Simple/MapServer/WMTS/tile/1.0.0/Simple/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg' }
+    /* list of different basemaps, it will be part of independent setting file
+     */
+    private basemapsSettings: BasemapSettings[] = [
+        // lcc
+        {
+            crsID: 3978,
+            basemaps: [
+                {
+                    id: 'SHADED',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBME_CBCE_HS_RO_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+                {
+                    id: 'LBL',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+                {
+                    id: 'CBMT',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBMT_CBCT_GEOM_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+                {
+                    id: 'SIMPLE',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/Simple/MapServer/WMTS/tile/1.0.0/Simple/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+            ],
+        },
+        // web mercator
+        {
+            crsID: 3857,
+            basemaps: [
+                {
+                    id: 'LBL',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_xxxx_TXT_3857/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+                {
+                    id: 'CBMT',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBMT_CBCT_GEOM_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_CBCT_GEOM_3857/default/default028mm/{z}/{y}/{x}.jpg',
+                },
+            ],
+        },
     ];
-
-    // Web Mercator url arrays {'ID', 'WMTS Geometry URL', 'WMTS Label URL'}
-    private wbUrls: Basemapurl[] = [
-        { 'id': '', 'urlGeom':  'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBMT_CBCT_GEOM_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_CBCT_GEOM_3857/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_xxxx_TXT_3857/default/default028mm/{z}/{y}/{x}.png'},
-        { 'id': '3857-CBMT', 'urlGeom':  'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBMT_CBCT_GEOM_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_CBMT_CBCT_GEOM_3857/default/default028mm/{z}/{y}/{x}.jpg' ,'urlLabel':'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3857/MapServer/WMTS/tile/1.0.0/BaseMaps_xxxx_TXT_3857/default/default028mm/{z}/{y}/{x}.png'}
-    ];
-
     private basemapConfig: BasemapConfig = {
         tms: false,
         tileSize: 256,
@@ -37,65 +79,59 @@ export class Basemap {
         noWrap: false,
     };
 
-    // LCC basemap options
-    private lccParamCBMT: BasemapOptions[] = [
-        {
-            id: 'lccGeomCBMT',
-            url: this.lccUrls[0].urlGeom , //default value
-            options: this.basemapConfig,
-        },
-        {
-            id: 'lccLabelCBMT',
-            url: this.lccUrls[0].urlLabel, //default value
-            options: this.basemapConfig,
-        },
-    ];
-
-
-    // Web Mercator basemap options
-    private wmParamCBMT: BasemapOptions[] = [
-        {
-            id: 'wmGeomCBMT',
-            url:  this.wbUrls[0].urlGeom, //default value
-            options: this.basemapConfig,
-        },
-        {
-            id: 'wmLabelCBMT',
-            url:  this.wbUrls[0].urlLabel, //default value
-            options: this.basemapConfig,
-        },
-    ];
+    get basemps(): BasemapOptions[] {
+        return this.basemaps;
+    }
 
     // attribution to add the the map
     private attributionVal: Attribution = {
         'en-CA': '© Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources',
         'fr-CA': '© Sa Majesté la Reine du Chef du Canada, représentée par le ministre des Ressources naturelles',
     };
-
-    get lccCBMT(): BasemapOptions[] {
-        
+    // build basemap group from both settings and user input
+    get Buildbasemapgroup(): BasemapOptions[] {
         // get proper geometry url
-        this.lccParamCBMT[0].url =this.lccUrls.filter(lccurl => lccurl.id ===this.basemapID)[0].urlGeom ;
-        // get proper label url
-        this.lccParamCBMT[1].url =
+        const basemapgroup: BasemapOptions[] = [];
+        let mainBasemapOpacity = 1;
+        const basemaps: BasemapProps[] = this.basemapsSettings.filter((basemapsSetting) => basemapsSetting.crsID === this.crsID)[0]
+            .basemaps;
+        if (this.shaded === true) {
+            basemapgroup.push({
+                id: basemaps.filter((basemap) => basemap.id === 'SHADED')[0].id,
+                url: basemaps.filter((basemap) => basemap.id === 'SHADED')[0].url,
+                options: this.basemapConfig,
+                opacity: 1,
+            });
+            mainBasemapOpacity = 0.5;
+        }
+        basemapgroup.push({
+            id: basemaps.filter((basemap) => basemap.id === this.basemapID)[0]?.id || 'SIMPLE',
+            url:
+                basemaps.filter((basemap) => basemap.id === this.basemapID)[0]?.url ||
+                basemaps.filter((basemap) => basemap.id === 'SIMPLE')[0].url,
+            options: this.basemapConfig,
+            opacity: mainBasemapOpacity,
+        });
+
+        if (this.labeled === true) {
+            // get proper label url
             this.language === 'en-CA'
-                ? this.lccParamCBMT[1].url.replaceAll('xxxx', 'CBMT')
-                : this.lccParamCBMT[1].url.replaceAll('xxxx', 'CBCT');
-        return this.lccParamCBMT;
+                ? basemapgroup.push({
+                      id: basemaps.filter((basemap) => basemap.id === 'LBL')[0].id,
+                      url: basemaps.filter((basemap) => basemap.id === 'LBL')[0].url.replaceAll('xxxx', 'CBMT'),
+                      options: this.basemapConfig,
+                      opacity: 1,
+                  })
+                : basemapgroup.push({
+                      id: basemaps.filter((basemap) => basemap.id === 'LBL')[0].id,
+                      url: basemaps.filter((basemap) => basemap.id === 'LBL')[0].url.replaceAll('xxxx', 'CBCT'),
+                      options: this.basemapConfig,
+                      opacity: 1,
+                  });
+        }
+
+        return basemapgroup;
     }
-
-    get wmCBMT(): BasemapOptions[] {
-        // get proper geometry url
-        this.wmParamCBMT[0].url =this.wbUrls.filter(wbUrl => wbUrl.id ===this.basemapID)[0].urlGeom ;
-        // get proper label url
-        this.wmParamCBMT[1].url =
-            this.language === 'en-CA'
-                ? this.wmParamCBMT[1].url.replaceAll('xxxx', 'CBMT')
-                : this.wmParamCBMT[1].url.replaceAll('xxxx', 'CBCT');
-
-        return this.wmParamCBMT;
-    }
-
     get attribution(): Attribution {
         return this.attributionVal;
     }
@@ -107,17 +143,20 @@ interface BasemapConfig {
     attribution: boolean;
     noWrap: boolean;
 }
-interface Basemapurl {
+interface BasemapProps {
     id: string;
-    urlGeom: string;
-    urlLabel: string;
-    
+    url: string;
+}
+interface BasemapSettings {
+    crsID: number;
+    basemaps: BasemapProps[];
 }
 
-export interface BasemapOptions {
+interface BasemapOptions {
     id: string;
     url: string;
     options: BasemapConfig;
+    opacity: number;
 }
 
 export interface Attribution {

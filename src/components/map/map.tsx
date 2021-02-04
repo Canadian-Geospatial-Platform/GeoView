@@ -14,7 +14,7 @@ import { ThemeProvider, useTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { MapOptions, getMapOptions } from '../../common/map';
-import { Basemap, BasemapOptions } from '../../common/basemap';
+import { BasemapGroup } from '../../common/basemap';
 import { Layer, LayerConfig, LayerTypes } from '../../common/layers/layer';
 
 import { Projection } from '../../common/projection';
@@ -39,12 +39,14 @@ interface MapProps {
     projection: number;
     language: string;
     basemapID:string;
+    shaded:boolean;
+    labeled:boolean;
     layers?: LayerConfig[];
 
 }
 
 function Map(props: MapProps): JSX.Element {
-    const { id, center, zoom, projection, language,basemapID, layers } = props;
+    const { id, center, zoom, projection, language,basemapID,shaded, labeled, layers } = props;
 
     const defaultTheme = useTheme();
 
@@ -56,8 +58,8 @@ function Map(props: MapProps): JSX.Element {
     const crs = projection === 3857 ? CRS.EPSG3857 : Projection.getProjection(projection);
 
     // get basemaps with attribution
-    const basemap: Basemap = new Basemap(language, basemapID);
-    const basemaps: BasemapOptions[] = projection === 3857 ? basemap.wmCBMT : basemap.lccCBMT;
+    const basemap: BasemapGroup = new BasemapGroup(language, basemapID,projection ,shaded, labeled);
+    const basemaps =  basemap.basemps;
     const attribution = language === 'en-CA' ? basemap.attribution['en-CA'] : basemap.attribution['fr-CA'];
 
     // get map option from slected basemap projection
@@ -124,7 +126,7 @@ function Map(props: MapProps): JSX.Element {
             }}
         >
             {basemaps.map((base) => (
-                <TileLayer key={base.id} url={base.url} attribution={attribution} />
+                <TileLayer key={base.id} url={base.url} attribution={attribution} opacity={base.opacity} />
             ))}
             <NavBar />
             {deviceSizeMedUp && <MousePosition />}
@@ -159,6 +161,8 @@ export function createMap(element: Element, config: MapProps, i18nInstance: i18n
                         projection={config.projection}
                         language={config.language}
                         basemapID={config.basemapID}
+                        shaded={config.shaded}
+                        labeled={config.labeled}
                         layers={config.layers}
                     />
                 </I18nextProvider>
