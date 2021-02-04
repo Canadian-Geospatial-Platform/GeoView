@@ -14,7 +14,7 @@ import { ThemeProvider, useTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { MapOptions, getMapOptions } from '../../common/map';
-import { Basemap, BasemapOptions } from '../../common/basemap';
+import { Basemap, BasemapGroupConfig } from '../../common/basemap';
 import { Layer, LayerConfig, LayerTypes } from '../../common/layers/layer';
 
 import { Projection } from '../../common/projection';
@@ -38,13 +38,12 @@ interface MapProps {
     zoom: number;
     projection: number;
     language: string;
-    basemapID:string;
+    basemap: BasemapGroupConfig;
     layers?: LayerConfig[];
-
 }
 
 function Map(props: MapProps): JSX.Element {
-    const { id, center, zoom, projection, language,basemapID, layers } = props;
+    const { id, center, zoom, projection, language, basemap, layers } = props;
 
     const defaultTheme = useTheme();
 
@@ -56,9 +55,8 @@ function Map(props: MapProps): JSX.Element {
     const crs = projection === 3857 ? CRS.EPSG3857 : Projection.getProjection(projection);
 
     // get basemaps with attribution
-    const basemap: Basemap = new Basemap(language, basemapID);
-    const basemaps: BasemapOptions[] = projection === 3857 ? basemap.wmCBMT : basemap.lccCBMT;
-    const attribution = language === 'en-CA' ? basemap.attribution['en-CA'] : basemap.attribution['fr-CA'];
+    const basemaps: Basemap = new Basemap(language, projection, basemap);
+    const attribution = language === 'en-CA' ? basemaps.attribution['en-CA'] : basemaps.attribution['fr-CA'];
 
     // get map option from slected basemap projection
     const mapOptions: MapOptions = getMapOptions(projection);
@@ -123,14 +121,14 @@ function Map(props: MapProps): JSX.Element {
                 api.ready();
             }}
         >
-            {basemaps.map((base) => (
-                <TileLayer key={base.id} url={base.url} attribution={attribution} />
+            {basemaps.Layers.map((base) => (
+                <TileLayer key={base.id} url={base.url} attribution={attribution} opacity={base.opacity} />
             ))}
             <NavBar />
             {deviceSizeMedUp && <MousePosition />}
             <ScaleControl position="bottomright" imperial={false} />
             {deviceSizeMedUp && <Attribution attribution={attribution} />}
-            {deviceSizeMedUp && <OverviewMap id={id} crs={crs} basemaps={basemaps} zoomFactor={mapOptions.zoomFactor} />}
+            {deviceSizeMedUp && <OverviewMap id={id} crs={crs} basemaps={basemaps.Layers} zoomFactor={mapOptions.zoomFactor} />}
             <div
                 className="leaflet-control cgp-appbar"
                 style={{
@@ -158,7 +156,7 @@ export function createMap(element: Element, config: MapProps, i18nInstance: i18n
                         zoom={config.zoom}
                         projection={config.projection}
                         language={config.language}
-                        basemapID={config.basemapID}
+                        basemap={config.basemap}
                         layers={config.layers}
                     />
                 </I18nextProvider>
