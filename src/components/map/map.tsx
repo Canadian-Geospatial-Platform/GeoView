@@ -39,12 +39,14 @@ interface MapProps {
     projection: number;
     language: string;
     basemapID:string;
+    shaded:boolean;
+    labeled:boolean;
     layers?: LayerConfig[];
 
 }
 
 function Map(props: MapProps): JSX.Element {
-    const { id, center, zoom, projection, language,basemapID, layers } = props;
+    const { id, center, zoom, projection, language,basemapID,shaded, labeled, layers } = props;
 
     const defaultTheme = useTheme();
 
@@ -56,7 +58,7 @@ function Map(props: MapProps): JSX.Element {
     const crs = projection === 3857 ? CRS.EPSG3857 : Projection.getProjection(projection);
 
     // get basemaps with attribution
-    const basemap: Basemap = new Basemap(language, basemapID);
+    const basemap: Basemap = new Basemap(language, basemapID,shaded, labeled);
     const basemaps: BasemapOptions[] = projection === 3857 ? basemap.wmCBMT : basemap.lccCBMT;
     const attribution = language === 'en-CA' ? basemap.attribution['en-CA'] : basemap.attribution['fr-CA'];
 
@@ -124,7 +126,7 @@ function Map(props: MapProps): JSX.Element {
             }}
         >
             {basemaps.map((base) => (
-                <TileLayer key={base.id} url={base.url} attribution={attribution} />
+                <TileLayer key={base.id} url={base.url} attribution={attribution} opacity={base.opacity} />
             ))}
             <NavBar />
             {deviceSizeMedUp && <MousePosition />}
@@ -159,6 +161,8 @@ export function createMap(element: Element, config: MapProps, i18nInstance: i18n
                         projection={config.projection}
                         language={config.language}
                         basemapID={config.basemapID}
+                        shaded={config.shaded}
+                        labeled={config.labeled}
                         layers={config.layers}
                     />
                 </I18nextProvider>
