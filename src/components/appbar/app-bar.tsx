@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+/**
+ * Create an appbar with buttons that can open a panel
+ */
 export function Appbar(): JSX.Element {
     const [open, setOpen] = useState(false);
     const [panel, setPanel] = useState<ButtonPanelType>();
@@ -89,6 +92,10 @@ export function Appbar(): JSX.Element {
         setPanelCount((count) => count + 1);
     }, []);
 
+    /**
+     * Open / Close the panel
+     * @param {boolean} status status of the panel
+     */
     const openClosePanel = (status: boolean): void => {
         api.event.emit(EVENT_NAMES.EVENT_PANEL_OPEN_CLOSE, mapId, {
             panelType: PANEL_TYPES.APPBAR,
