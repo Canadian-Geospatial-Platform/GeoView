@@ -3,7 +3,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const childProcess = require('child_process');
 const package = require('./package.json');
 
@@ -58,20 +58,12 @@ const config = {
             filename: 'usecases.html',
             chunks: ['app'],
         }),
-        new HtmlWebpackPlugin({
-            template: './public/index3.html',
-            title: 'Canadian Geospatial Platform Viewer',
-            inject: 'head',
-            scriptLoading: 'blocking',
-            filename: 'index3.html',
-            chunks: ['app'],
-        }),
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 { from: './public/img', to: 'img' },
                 { from: './public/locales', to: 'locales' },
-                { from: './public/locales', to: 'css' },
-                { from: './public/locales', to: 'geojson' },
+                { from: './public/css', to: 'css' },
+                { from: './public/geojson', to: 'geojson' },
             ],
         }),
         new webpack.DefinePlugin({
