@@ -3,14 +3,26 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const childProcess = require('child_process');
+const glob = require('glob');
 const package = require('./package.json');
 
 // get version numbers and the hash of the current commit
 const [major, minor, patch] = package.version.split('.');
 const hash = JSON.stringify(childProcess.execSync('git rev-parse HEAD').toString().trim());
 console.log(`Build CGP Viewer: ${major}.${minor}.${patch}`);
+
+// inject all samples file
+const multipleHtmlPlugins = glob.sync('./public/templates/*.html').map((name) => {
+    return new HtmlWebpackPlugin({
+        template: `${name}`,
+        filename: `${name.substring(name.lastIndexOf('/') + 1, name.length)}`,
+        inject: 'head',
+        scriptLoading: 'blocking',
+        chunks: ['app'],
+    });
+});
 
 const config = {
     entry: {
@@ -51,27 +63,12 @@ const config = {
             inject: 'head',
             scriptLoading: 'blocking',
         }),
-        new HtmlWebpackPlugin({
-            template: './public/templates/usecases.html',
-            inject: 'head',
-            scriptLoading: 'blocking',
-            filename: 'usecases.html',
-            chunks: ['app'],
-        }),
-        new HtmlWebpackPlugin({
-            template: './public/index3.html',
-            title: 'Canadian Geospatial Platform Viewer',
-            inject: 'head',
-            scriptLoading: 'blocking',
-            filename: 'index3.html',
-            chunks: ['app'],
-        }),
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 { from: './public/img', to: 'img' },
                 { from: './public/locales', to: 'locales' },
-                { from: './public/locales', to: 'css' },
-                { from: './public/locales', to: 'geojson' },
+                { from: './public/css', to: 'css' },
+                { from: './public/geojson', to: 'geojson' },
             ],
         }),
         new webpack.DefinePlugin({
@@ -83,7 +80,6 @@ const config = {
                 hash,
             },
         }),
-    ],
+    ].concat(multipleHtmlPlugins),
 };
-
 module.exports = config;
