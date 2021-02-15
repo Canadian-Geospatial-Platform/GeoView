@@ -3,24 +3,42 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            <%= htmlWebpackPlugin.options.title %>
+        </title>
         <link rel="shortcut icon" href="./favicon.ico">
+                <style>
+                    .logo{
+                             height:160px; 
+                             width: 160px; 
+                    }
+                    .center {
+                            display: block;
+                            margin-left: auto;
+                            margin-right: auto;
+                            text-align: center;
+                    }
+                </style>
     </head>
     <body>
 <div style="text-align: left;margin: 0 auto;">
-<table cellpadding="1" cellspacing="1" style="width:1180px; margin:auto;">
-	<tbody>
-		<tr>
-			<td style="width:186px"><img alt="logo" src="./img/Logo.png" style="height:120px; width: 120px; text-align: center;" /></td>
-			<td style="width:979px">
-			<h1>&nbsp;</h1>
-			<h1><strong>Plateforme Géospatiale Canadienne (PGC) / Canadian Geospatial Platform (CGP)</strong></h1>
-            <h1><strong>GeoView project</strong></h1>
-			</td>
-		</tr>
-		<tr>
-			<td><a href="./usecases.html">Use Cases</a></td>
-		</tr>
-	</tbody>
+<table cellpadding="1" cellspacing="1">
+    <tbody>
+        <tr>
+            <h1 class="center" ><strong>Plateforme Géospatiale Canadienne (PGC)</strong></h1>
+            <h1 class="center"><strong>Canadian Geospatial Platform (CGP)</strong></h1>
+            <h1 class="center"><strong>GeoView project</strong></h1>
+            </td>
+        </tr>
+        <tr>
+            <img class="center logo" alt="logo" src="./img/Logo.png" />
+        </tr>
+            <h3>Accessing map center from outside of the core viewer using api event listeners</h3>
+            <h3>L'Atlas du Canada - Ressources et projets d'énergie propre (RPEP)</h3>
+        <tr>
+            <td><a href="./usecases.html">Use Cases</a></td>
+        </tr>
+    </tbody>
 </table>
 </div>
 </body>
