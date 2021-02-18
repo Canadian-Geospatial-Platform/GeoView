@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+    listContainer: {
+        overflowY: 'scroll',
+        height: '600px',
+    },
     card: {
         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
         transition: '0.3s',
@@ -206,10 +210,43 @@ const BasemapSwitcher = (props) => {
                 max: 0,
             },
         });
+
+        // create a new basemap with shaded relief and labels layer
+        createBasemap('shadedLabel1', {
+            name: 'Shaded Relief with Labels',
+            description:
+                '":"This Canadian base map provides geographic context using shaded relief with labels. From Natural Resources Canada.',
+            descSummary: '',
+            altText: 'Shaded Relief with Labels',
+            thumbnailUrl: '',
+            layers: [
+                {
+                    id: 'shaded',
+                    type: 'shaded',
+                    url:
+                        'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/CBME_CBCE_HS_RO_3978/MapServer/WMTS/tile/1.0.0/CBMT_CBCT_GEOM_3978/default/default028mm/{z}/{y}/{x}.jpg',
+                    opacity: 1,
+                },
+                {
+                    id: 'label',
+                    type: 'label',
+                    url: 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/BaseMaps/xxxx_TXT_3978/MapServer/WMTS/tile/1.0.0/xxxx_TXT_3978/default/default028mm/{z}/{y}/{x}.jpg'.replaceAll(
+                        'xxxx',
+                        language === 'en-CA' ? 'CBMT' : 'CBCT'
+                    ),
+                    opacity: 1,
+                },
+            ],
+            attribution: 'test attribution',
+            zoomLevels: {
+                min: 0,
+                max: 0,
+            },
+        });
     }, []);
 
     return (
-        <div>
+        <div className={classes.listContainer}>
             {basemapList.map((basemap) => {
                 return (
                     <div
@@ -225,8 +262,8 @@ const BasemapSwitcher = (props) => {
                         )}
 
                         {Array.isArray(basemap.thumbnailUrl) &&
-                            basemap.thumbnailUrl.map((thumbnail) => {
-                                return <img src={thumbnail} alt={basemap.altText} className={classes.thumbnail} />;
+                            basemap.thumbnailUrl.map((thumbnail, index) => {
+                                return <img key={index} src={thumbnail} alt={basemap.altText} className={classes.thumbnail} />;
                             })}
 
                         <div className={classes.container}>{basemap.name}</div>
