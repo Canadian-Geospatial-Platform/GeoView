@@ -1,0 +1,97 @@
+<!doctype html><html><head><meta name="viewport" content="width=500,initial-scale=1"/><title>Canadian Geospatial Platform Viewer</title><link rel="stylesheet" href="css/style.css"/><link rel="shortcut icon" href="./favicon.ico"/><meta name="msapplication-TileColor" content="#da532c"/><meta name="msapplication-config" content="./img/browserconfig.xml"/><meta name="theme-color" content="#ffffff"/><meta name="msapplication-TileColor" content="#da532c"/><meta name="theme-color" content="#ffffff"/><link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat:200,300,400,900|Merriweather" rel="stylesheet"/><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/><style>/* The device with borders */
+            .device {
+                position: relative;
+                margin: auto;
+                border: 16px black solid;
+                border-top-width: 60px;
+                border-bottom-width: 60px;
+                border-radius: 36px;
+            }
+            .smaprtphoneframe {
+                width: 360px;
+                height: 640px;
+            }
+            /* The device with borders */
+            .tabletframe {
+                width: 768px;
+                height: 1024px;
+            }
+            /* The horizontal line on the top of the device */
+            .device:before {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 5px;
+                position: absolute;
+                top: -30px;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #333;
+                border-radius: 10px;
+            }
+
+            /* The circle on the bottom of the device */
+            .device:after {
+                content: '';
+                display: block;
+                width: 35px;
+                height: 35px;
+                position: absolute;
+                left: 50%;
+                bottom: -65px;
+                transform: translate(-50%, -50%);
+                background: #333;
+                border-radius: 50%;
+            }
+
+            /* The screen (or content) of the device */
+            .smartphone {
+                width: 360px;
+                height: 640px;
+                background: white;
+            }
+            #mapid {
+                height: 1000px;
+            }
+
+            .panel {
+                display: inline-block;
+                background: #ffffff;
+                box-shadow: 0px 0px 5px 5px #666666;
+                -webkit-box-shadow: 2px 2px 5px 5x #666666;
+                -moz-box-shadow: 2px 2px 5px 5px #666666;
+                margin: 10px;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .toolbar {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                margin: 10px;
+            }
+            /* The screen (or content) of the device */
+            .tablet {
+                width: 768px;
+                height: 1024px;
+                background: white;
+                margin: -1px;
+            }</style><script src="gcpv-main.js"></script></head><body><p><strong>Configuraion Snippet:</strong></p><div><div class="device smaprtphoneframe"><div class="smartphone"><iframe src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"/></div></div><hr><div class="device tabletframe"><div class="tablet"></div></div></div><script>// initialize cgpv and api events, a callback is optional, used if calling api's after the rendering is ready
+            cgpv.init(function () {
+                console.log('api is ready');
+                // inject cofiguration snippet inside panel
+                for (j = 0; j < document.getElementsByClassName('llwp-map').length; j++) {
+                    let configSnippet = '';
+                    let mapID = document.getElementsByClassName('llwp-map')[j].id;
+                    for (i = 0; i < document.getElementById(mapID).attributes.length; i++) {
+                        configSnippet +=
+                            document.getElementById(mapID).attributes[i].nodeName +
+                            ': "' +
+                            document.getElementById(mapID).attributes[i].nodeValue +
+                            '" ';
+                    }
+                    document.getElementById(mapID + 'CS').innerHTML = configSnippet;
+                }
+            });</script></body></html>
