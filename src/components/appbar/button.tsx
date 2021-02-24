@@ -19,6 +19,17 @@ const useStyles = makeStyles((theme) => ({
             color: theme.palette.primary.dark,
         },
     },
+    icon: {
+        width: '1em',
+        height: '1em',
+        display: 'inherit',
+        fontSize: '1.7142857142857142rem',
+        alignItems: 'inherit',
+        justifyContent: 'inherit',
+        transition: 'fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        flexShrink: 0,
+        userSelect: 'none',
+    },
 }));
 
 /**
@@ -36,12 +47,12 @@ export default function ButtonApp(props: ButtonAppProps): JSX.Element {
         <Tooltip title={t(tooltip)} placement="right" TransitionComponent={Fade}>
             <ListItem button id={id} onClick={onClickFunction} className={classes.listItem}>
                 <ListItemIcon className={classes.listItemColor}>
-                    {typeof icon === 'string' ? <HtmlToReact htmlContent={icon} /> : <Icon />}
+                    {typeof icon === 'string' ? <HtmlToReact className={classes.icon} htmlContent={icon} /> : <Icon />}
                 </ListItemIcon>
                 {typeof content === 'undefined' ? (
                     <ListItemText className={classes.listItemColor} primary={t(tooltip)} />
                 ) : typeof content === 'string' ? (
-                    <HtmlToReact htmlContent={content} />
+                    <HtmlToReact className={undefined} htmlContent={content} />
                 ) : (
                     content
                 )}

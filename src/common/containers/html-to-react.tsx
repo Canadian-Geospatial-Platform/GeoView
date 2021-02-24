@@ -3,10 +3,11 @@ import React from 'react';
 
 interface HtmlToReactProps {
     htmlContent: string;
+    className: string | undefined;
 }
 
 export const HtmlToReact = (props: HtmlToReactProps): JSX.Element => {
-    const { htmlContent } = props;
+    const { htmlContent, className } = props;
 
-    return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+    return <div className={className} dangerouslySetInnerHTML={{ __html: htmlContent }} />;
 };

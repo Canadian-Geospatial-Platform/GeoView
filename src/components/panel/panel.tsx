@@ -121,7 +121,7 @@ export default function PanelApp(props: PanelAppProps): JSX.Element {
                 className={classes.avatar}
                 avatar={
                     typeof panel.icon === 'string' ? (
-                        <HtmlToReact htmlContent={panel.icon} />
+                        <HtmlToReact className={undefined} htmlContent={panel.icon} />
                     ) : typeof panel.icon === 'object' ? (
                         <panel.icon />
                     ) : (
@@ -140,7 +140,7 @@ export default function PanelApp(props: PanelAppProps): JSX.Element {
             <Divider />
             <CardContent>
                 {typeof panel.content === 'string' ? (
-                    <HtmlToReact htmlContent={panel.content} />
+                    <HtmlToReact className={undefined} htmlContent={panel.content} />
                 ) : typeof panel.content === 'object' ? (
                     panel.content
                 ) : (

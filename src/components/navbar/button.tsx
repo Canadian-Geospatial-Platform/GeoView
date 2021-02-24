@@ -21,6 +21,17 @@ const useStyles = makeStyles((theme) => ({
             color: theme.palette.primary.dark,
         },
     },
+    icon: {
+        width: '1em',
+        height: '1em',
+        display: 'inherit',
+        fontSize: '1.7142857142857142rem',
+        alignItems: 'inherit',
+        justifyContent: 'inherit',
+        transition: 'fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        flexShrink: 0,
+        userSelect: 'none',
+    },
 }));
 
 interface ButtonMapNavProps {
@@ -45,7 +56,7 @@ export function ButtonMapNav(props: ButtonMapNavProps): JSX.Element {
     return (
         <Tooltip title={t(tooltip)} placement="left" TransitionComponent={Fade} ref={newButton}>
             <Button className={`${classes.buttonClass} ${classes.color}`} onClick={onClickFunction}>
-                {typeof icon === 'string' ? <HtmlToReact htmlContent={icon} /> : icon}
+                {typeof icon === 'string' ? <HtmlToReact className={classes.icon} htmlContent={icon} /> : icon}
             </Button>
         </Tooltip>
     );
