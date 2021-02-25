@@ -12,6 +12,7 @@ import '../node_modules/leaflet/dist/leaflet.css';
 import '../public/css/style.css';
 
 import AppStart from './core/app-start';
+import { manageKeyboardFocus } from './common/utilities';
 
 // hack for default leaflet icon: https://github.com/Leaflet/Leaflet/issues/4968
 // TODO: put somewhere else
@@ -47,6 +48,9 @@ const cgpv = {
         ...api.plugin,
     },
 };
+
+// apply focus to element when keyboard navigation is use
+manageKeyboardFocus();
 
 // freeze variable name so a variable with same name can't be defined from outside
 Object.freeze(cgpv);
