@@ -8,6 +8,7 @@ import { MapProps } from '../components/map/map';
 import { Basemap } from './basemap';
 import { Layer } from './layers/layer';
 
+
 /**
  * interface used to store created maps
  */

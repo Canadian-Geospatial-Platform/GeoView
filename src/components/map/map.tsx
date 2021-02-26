@@ -25,6 +25,8 @@ import { MapViewer } from '../../common/map-viewer';
 import { generateId } from '../../common/constant';
 import { NorthArrow, NorthPoleFlag } from '../mapctrl/north-arrow';
 
+import { Snackbar } from '../mapctrl/snackbar';
+
 export interface MapProps {
     id?: string;
     center: LatLngTuple;
@@ -150,10 +152,11 @@ export function Map(props: MapProps): JSX.Element {
                             zIndex: defaultTheme.zIndex.appBar,
                         }}
                     >
-                        <Appbar id={id} />
+                        <Appbar />
                     </div>
                     <NorthArrow projection={crs} />
                     <NorthPoleFlag projection={crs} />
+                    <Snackbar id={id} />
                 </>
             )}
         </MapContainer>

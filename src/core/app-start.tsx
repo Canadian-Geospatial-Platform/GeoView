@@ -10,11 +10,19 @@ import parse, { attributesToProps } from 'html-react-parser';
 
 import { LatLngTuple } from 'leaflet';
 
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+import { SnackbarProvider } from 'notistack';
 
 import { Map, MapProps } from '../components/map/map';
 import { theme } from '../assests/style/theme';
+
+const useStyles = makeStyles(() => ({
+    navBar: {
+        '& .MuiButton-text': { color: theme.palette.primary.light },
+    },
+}));
 
 /**
  * interface used when passing html elements from the html pages
@@ -28,6 +36,7 @@ interface AppStartProps {
  */
 const AppStart = (props: AppStartProps): JSX.Element => {
     const { html } = props;
+    const classes = useStyles();
 
     /**
      * Create maps from inline configs with class name llwp-map in index.html
@@ -50,17 +59,28 @@ const AppStart = (props: AppStartProps): JSX.Element => {
                     return (
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         <div {...attributesToProps(domNode.attribs)}>
-                            <I18nextProvider i18n={i18nInstance}>
-                                <Map
-                                    id={domNode.attribs.id}
-                                    center={center}
-                                    zoom={config.zoom}
-                                    projection={config.projection}
-                                    language={config.language}
-                                    layers={config.layers}
-                                    basemapOptions={config.basemapOptions}
-                                />
-                            </I18nextProvider>
+                            <SnackbarProvider
+                                maxSnack={1}
+                                dense
+                                autoHideDuration={5000}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }}
+                                className={classes.navBar}
+                            >
+                                <I18nextProvider i18n={i18nInstance}>
+                                    <Map
+                                        id={domNode.attribs.id}
+                                        center={center}
+                                        zoom={config.zoom}
+                                        projection={config.projection}
+                                        language={config.language}
+                                        layers={config.layers}
+                                        basemapOptions={config.basemapOptions}
+                                    />
+                                </I18nextProvider>
+                            </SnackbarProvider>
                         </div>
                     );
                 }
