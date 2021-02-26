@@ -43,7 +43,7 @@ export interface MapProps {
     layers?: LayerConfig[];
 }
 
-function Map(props: MapProps): JSX.Element {
+export function Map(props: MapProps): JSX.Element {
     const { id, center, zoom, projection, language } = props;
 
     const [basemapLayers, setBasemapLayers] = useState([]);
