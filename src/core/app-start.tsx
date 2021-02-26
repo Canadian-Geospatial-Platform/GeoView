@@ -10,11 +10,19 @@ import parse, { attributesToProps } from 'html-react-parser';
 
 import { LatLngTuple } from 'leaflet';
 
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+import { SnackbarProvider } from 'notistack';
 
 import { Map, MapProps } from '../components/map/map';
 import { theme } from '../assests/style/theme';
+
+const useStyles = makeStyles(() => ({
+    snackBar: {
+        '& .MuiButton-text': { color: theme.palette.primary.light },
+    },
+}));
 
 /**
  * interface used when passing html elements from the html pages
@@ -28,6 +36,7 @@ interface AppStartProps {
  */
 const AppStart = (props: AppStartProps): JSX.Element => {
     const { html } = props;
+    const classes = useStyles();
 
     /**
      * Create maps from inline configs with class name llwp-map in index.html
@@ -72,10 +81,21 @@ const AppStart = (props: AppStartProps): JSX.Element => {
 
     return (
         <ThemeProvider theme={theme}>
-            <Suspense fallback="">
-                <CssBaseline />
-                {getInlineMaps()}
-            </Suspense>
+            {/* <SnackbarProvider
+                maxSnack={1}
+                dense
+                autoHideDuration={5000}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                className={`${classes.snackBar} cgpv-snackbar`}
+            > */}
+                <Suspense fallback="">
+                    <CssBaseline />
+                    {getInlineMaps()}
+                </Suspense>
+            {/* </SnackbarProvider> */}
         </ThemeProvider>
     );
 };
