@@ -77,29 +77,11 @@
                 background: white;
             }
 
-            .panel {
-                display: inline-block;
-                background: #ffffff;
-                box-shadow: 0px 0px 5px 5px #666666;
-                -webkit-box-shadow: 2px 2px 5px 5x #666666;
-                -moz-box-shadow: 2px 2px 5px 5px #666666;
-                margin: 10px;
-                padding: 10px;
-                font-size: 12px;
-            }
-
             .ToolAvailability {
                 display: flex;
                 justify-content: center;
             }
 
-            .toolbar {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                width: 100%;
-                margin: 10px;
-            }
             /* The screen (or content) of the device */
             .tablet {
                 width: 959px;
@@ -113,9 +95,7 @@
                 background: white;
                 margin: -1px;
             }
-            body {
-                padding: 50px;
-            }
+
             iframe {
                 margin-top: 0px;
                 width: 100%;
@@ -136,7 +116,7 @@
         </style>
         <script src="gcpv-main.js"></script>
     </head>
-    <body>
+    <body onLoad="adjustVisibilityofMaps">
         <div calss="header-table">
             <table>
                 <tbody>
@@ -167,7 +147,7 @@
         <p>Small Screen Size 640px of width or less</p>
         <div class="device smaprtphoneframe">
             <div class="smartphone">
-                <iframe name="iframe1" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe>
+                <iframe id="iframe1" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe>
             </div>
         </div>
         <br /><br />
@@ -176,7 +156,7 @@
         <p>Medium Screen Size 640px to 960px of width</p>
         <div class="device tabletframe">
             <div class="tablet">
-                <iframe name="iframe2" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe>
+                <iframe id="iframe2" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe>
             </div>
         </div>
         <br />
@@ -185,7 +165,7 @@
         <p>Big Screen Size 960px of width or up</p>
         <div class="pcframe">
             <div class="pc">
-                <iframe name="iframe3" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe>
+                <iframe id="iframe3" src="responsive_page_map.html" style="width: 100%; border: none; height: 100%"></iframe> 
             </div>
         </div>
         <div>
@@ -259,5 +239,14 @@
                 </tbody>
             </table>
         </div>
+        <script>
+            // change map height to fit in each device
+            function adjustVisibilityofMaps() {
+                document.getElementById('iframe1').contentWindow.document.getElementById('RPT1').style.height = '500px';
+                document.getElementById('iframe3').contentWindow.document.getElementById('RPT1').style.height = '650px';
+                document.getElementById('iframe2').contentWindow.document.getElementById('RPT1').style.height = '800px';
+            }
+            window.onload = adjustVisibilityofMaps;
+        </script>
     </body>
 </html>
