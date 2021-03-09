@@ -130,6 +130,9 @@ export function Map(props: MapProps): JSX.Element {
                     id: id || generateId(id),
                 });
 
+                // check if geometries are provided from url
+                viewer.loadGeomtries();
+
                 // call the ready function since rendering of this map instance is done
                 api.ready();
 
