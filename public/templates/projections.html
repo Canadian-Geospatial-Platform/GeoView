@@ -81,10 +81,8 @@
             <div id="PRJ2CS" class="panel"></div>
         </div>
         <script>
-            // initialize cgpv and api events, a callback is optional, used if calling api's after the rendering is ready
-            cgpv.init(function () {
-                console.log('api is ready');
-                // inject cofiguration snippet inside panel
+            function createConfigSnippet() {
+                // inject configuration snippet inside panel
                 for (j = 0; j < document.getElementsByClassName('llwp-map').length; j++) {
                     let configSnippet = '';
                     let mapID = document.getElementsByClassName('llwp-map')[j].id;
@@ -97,6 +95,12 @@
                     }
                     document.getElementById(mapID + 'CS').innerHTML = configSnippet;
                 }
+            }
+            // initialize cgpv and api events, a callback is optional, used if calling api's after the rendering is ready
+            cgpv.init(function () {
+                console.log('api is ready');
+                //create snippets
+                createConfigSnippet();
             });
         </script>
     </body>
