@@ -6,6 +6,7 @@ import EventEmitter from 'eventemitter3';
  * constant contains event names
  */
 export const EVENT_NAMES = {
+    EVENT_MAP_LOADED: 'map/loaded',
     /**
      * Event triggered when a user stops moving the map
      */

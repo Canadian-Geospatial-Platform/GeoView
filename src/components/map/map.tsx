@@ -137,7 +137,12 @@ export function Map(props: MapProps): JSX.Element {
                 // call the ready function since rendering of this map instance is done
                 api.ready();
 
+                // emit the map loaded event
                 setIsLoaded(true);
+                console.log('set map ' + id)
+                api.event.emit(EVENT_NAMES.EVENT_MAP_LOADED, id, {
+                    map: cgpMap,
+                });
             }}
         >
             {isLoaded && (
@@ -153,11 +158,9 @@ export function Map(props: MapProps): JSX.Element {
                             />
                         );
                     })}
-                    <NavBar />
                     {deviceSizeMedUp && <MousePosition />}
                     <ScaleControl position="bottomright" imperial={false} />
                     {deviceSizeMedUp && <Attribution attribution={attribution} />}
-                    {deviceSizeMedUp && <OverviewMap id={id} crs={crs} language={language} zoomFactor={mapOptions.zoomFactor} />}
                     <div
                         className="leaflet-control cgp-appbar"
                         style={{
@@ -167,9 +170,11 @@ export function Map(props: MapProps): JSX.Element {
                     >
                         <Appbar />
                     </div>
+                    {deviceSizeMedUp && <OverviewMap id={id} crs={crs} language={language} zoomFactor={mapOptions.zoomFactor} />}
                     <NorthArrow projection={crs} />
                     <NorthPoleFlag projection={crs} />
                     <Crosshair id={id} />
+                    <NavBar />
                     <SnackbarProvider
                         maxSnack={1}
                         dense
