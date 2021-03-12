@@ -4,3 +4,11 @@ Hold viewer specific css not inside theme
 .keyboard-focused {
     outline: revert !important;
 }
+
+.llwp-map {
+    position: relative !important;
+}
+
+.MuiBackdrop-root {
+    position: absolute !important;
+}
