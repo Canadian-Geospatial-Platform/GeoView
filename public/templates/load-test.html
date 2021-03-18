@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= htmlWebpackPlugin.options.title %></title>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="msapplication-config" content="./img/browserconfig.xml" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto|Montserrat:200,300,400,900|Merriweather"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <div calss="header-table">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><img class="header-logo" alt="logo" src="./img/Logo.png" /></td>
+                        <td class="header-title">
+                            <h1><strong>Load Test</strong></h1>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><a href="./index.html">Main</a><br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>This page is used to showcase how the viewer may implement different vector functions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <label id="timer">time to load </label><br />
+        <button id="load-wms-btn">Load WMS Layers</button><input id="wmslayerCount" /> No of layers to load<br />
+
+        <button id="load-feature-btn">Load esri feature Layers</button><input id="featureLayerCount" /> No of layers to load<br />
+        <button id="load-dynamic-btn">Load esri dynamic Layers</button><input id="dynamicLayerCount" /> No of layers to load<br />
+        <button id="load-geoJson-line-btn">Load geojson line Layers</button><input id="geoJsonLineLayerCount" /> No of layers to load<br />
+        <button id="load-geoJson-polygon-btn">Load geojson polygon Layers</button><input id="geoJsonPolygonLayerCount" /> No of layers to
+        load<br />
+        <button id="load-geoJson-point-btn">Load geojson point Layers</button><input id="geoJsonPointLayerCount" /> No of layers to load<br />
+        <button id="load-feature-line-btn">Load line dynamically</button><input id="featurelineCount" /> No of features to load<br />
+        <button id="load-feature-polygon-btn">Load polygon dynamically</button><input id="featurePolygonCount" /> No of features to load<br />
+        <button id="load-feature-point-btn">Load point dynamically</button><input id="featurePointCount" /> No of features to load<br />
+
+        <div
+            id="mapWM"
+            class="llwp-map"
+            data-leaflet=" { 'name': 'Web Mercator', 'projection': 3978, 'zoom': 4, 'center': [60,-100], 'language': 'en-CA', 'basemapOptions': { 'id': 'transport', 'shaded': false, 'labeled': true } ,
+            'layers': []} "
+        ></div>
+        <script src="codedoc.js"></script>
+        <script>
+            // initialize cgpv and api events, a callback is optional, used if calling api's after the rendering is ready
+            cgpv.init(function () {
+                console.log('api is ready');
+            });
+
+            // find the button element by ID
+            var addwmsButton = document.getElementById('load-wms-btn');
+            addwmsButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+
+                if (typeof parseInt(document.getElementById('wmslayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('wmslayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createWmsLayer({
+                            type: 'ogcWMS',
+                            entries: '0',
+                            url:
+                                'https://webservices.maps.canada.ca/arcgis/services/StatCan/census_subdivisions_2016_en/MapServer/WMSServer',
+                        });
+
+                        i++;
+                    }
+                }
+                cgpv.api.map('mapWM').layers[cgpv.api.map('mapWM').layers.length - 1].layer.on('load', function () {
+                    var t1 = performance.now();
+                    document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+                });
+            });
+
+            var addFeatureButton = document.getElementById('load-feature-btn');
+            addFeatureButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                if (typeof parseInt(document.getElementById('featureLayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('featureLayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createFeatureLayer({
+                            type: 'esriFeature',
+                            url:
+                                'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NACEI/energy_infrastructure_of_north_america_en/MapServer/1',
+                        });
+
+                        i++;
+                    }
+                }
+                cgpv.api.map('mapWM').layers[cgpv.api.map('mapWM').layers.length - 1].layer.on('load', function () {
+                    var t1 = performance.now();
+                    document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+                });
+            });
+
+            var addDynamicButton = document.getElementById('load-dynamic-btn');
+            addDynamicButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                if (typeof parseInt(document.getElementById('dynamicLayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('dynamicLayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createDynamicLayer({
+                            type: 'esriDynamic',
+                            entries: '4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 16, 28, 29, 37',
+                            url:
+                                'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NACEI/energy_infrastructure_of_north_america_en/MapServer',
+                        });
+                        document.getElementById('dynamicLayerCount').innerText = i;
+                        i++;
+                    }
+                }
+                cgpv.api.map('mapWM').layers[cgpv.api.map('mapWM').layers.length - 1].layer.on('load', function () {
+                    var t1 = performance.now();
+                    document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+                });
+            });
+
+            var addGeoJsonLineButton = document.getElementById('load-geoJson-line-btn');
+            addGeoJsonLineButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                if (typeof parseInt(document.getElementById('geoJsonLineLayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('geoJsonLineLayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createGeoJSONLayer({
+                            type: 'geoJSON',
+                            url: './geojson/lines.json',
+                        });
+
+                        i++;
+                    }
+                }
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+
+            var addGeoJsonPolygonButton = document.getElementById('load-geoJson-polygon-btn');
+            addGeoJsonPolygonButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                if (typeof parseInt(document.getElementById('geoJsonPolygonLayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('geoJsonPolygonLayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createGeoJSONLayer({
+                            type: 'geoJSON',
+                            url: './geojson/polygons.json',
+                        });
+
+                        i++;
+                    }
+                }
+
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+            var addGeoJsonPointButton = document.getElementById('load-geoJson-point-btn');
+            addGeoJsonPointButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                if (typeof parseInt(document.getElementById('geoJsonPointLayerCount').value) === 'number') {
+                    let i = 1;
+                    for (j = 0; j < parseInt(document.getElementById('geoJsonPointLayerCount').value); j++) {
+                        // add an event listener when a button is clicked
+                        // adding a geojson layer requires a type of geojson and url
+                        const layerID = cgpv.api.map('mapWM').createGeoJSONLayer({
+                            type: 'geoJSON',
+                            url: './geojson/points.json',
+                        });
+
+                        i++;
+                    }
+                }
+
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+            var addFeatureLineButton = document.getElementById('load-feature-line-btn');
+            addFeatureLineButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                let i = 1;
+                for (j = 0; j < parseInt(document.getElementById('featurelineCount').value); j++) {
+                    addPolyline(cgpv.api.map('mapWM'));
+                }
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+            var addFeaturePointButton = document.getElementById('load-feature-point-btn');
+            addFeaturePointButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                let i = 1;
+                for (j = 0; j < parseInt(document.getElementById('featurePointCount').value); j++) {
+                    addCircleMarker(cgpv.api.map('mapWM'), Math.floor(Math.random()));
+                }
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+
+            var addFeaturePolygonButton = document.getElementById('load-feature-polygon-btn');
+            addFeaturePolygonButton.addEventListener('click', function (e) {
+                var t0 = performance.now();
+                let i = 1;
+                for (j = 0; j < parseInt(document.getElementById('featurePolygonCount').value); j++) {
+                    addPolygon(cgpv.api.map('mapWM'), Math.floor(Math.random() * (20 - 5)));
+                }
+                var t1 = performance.now();
+                document.getElementById('timer').innerText = Math.round(t1 - t0) / 1000 + ' Seconds';
+            });
+
+            function addCircleMarker(map) {
+                // call an api function to draw a polygon
+                const circleMarker = cgpv.api
+                    .map(map)
+                    .addCircleMarker(generateRandomCoord()[0], -generateRandomCoord()[1], Math.floor(Math.random() * 20), {
+                        color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.5,
+                        radius: 50.0,
+                    });
+                cgpv.api.map(map).addToGeometryGroup(circleMarker);
+            }
+
+            function addPolygon(map, factor) {
+                // call an api function to draw a polygon
+                const polygon = cgpv.api.map(map).addPolygon(
+                    [
+                        [generateRandomCoord()[0] + factor, -generateRandomCoord()[1] + factor],
+                        [generateRandomCoord()[0] + factor, -generateRandomCoord()[1] - factor],
+                        [generateRandomCoord()[0] - factor, -generateRandomCoord()[1] + factor],
+                        [generateRandomCoord()[0] - factor, -generateRandomCoord()[1] - factor],
+                    ],
+                    {
+                        stroke: true,
+                        color: '#000',
+                        weight: 5,
+                        opacity: '0.8',
+                    }
+                );
+                cgpv.api.map(map).addToGeometryGroup(polygon);
+            }
+
+            function addPolyline(map) {
+                // call an api function to draw a polyline
+                const polyline = cgpv.api.map(map).addPolyline(
+                    [
+                        [generateRandomCoord()[0], -generateRandomCoord()[1]],
+                        [generateRandomCoord()[0], -generateRandomCoord()[1]],
+                    ],
+                    {
+                        stroke: true,
+                        color: '#000',
+                        weight: 5,
+                        opacity: '0.8',
+                    }
+                );
+
+                cgpv.api.map(map).addToGeometryGroup(polyline);
+            }
+            function generateRandomCoord() {
+                return [Math.floor(Math.random() * (72 - 40)) + 40, Math.floor(Math.random() * (129 - 62)) + 62];
+            }
+        </script>
+    </body>
+</html>
