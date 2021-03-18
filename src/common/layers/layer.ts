@@ -25,11 +25,11 @@ export const LayerTypes = {
 /**
  * interface used when adding a new layer
  */
-export interface LayerConfig {
-    url: string;
-    type: string;
-    entries: string;
-}
+// export interface LayerConfig {
+//     url: string;
+//     type: string;
+//     entries: string;
+// }
 
 /**
  * interface used when adding a new layer

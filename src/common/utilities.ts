@@ -6,7 +6,7 @@ import { EVENT_NAMES } from '../api/event';
  * Issue in Leaflet... not implemented in the current release: Leaflet/Leaflet#7259
  * Code from: https://github.com/MaxMaeder/keyboardFocus.js
  */
-export function manageKeyboardFocus(): void {
+function manageKeyboardFocus(): void {
     // Remove the 'keyboard-focused' class from any elements that have it
     function removeFocusedClass() {
         const previouslyFocusedElement = document.getElementsByClassName('keyboard-focused')[0];
@@ -41,3 +41,23 @@ export function manageKeyboardFocus(): void {
     document.addEventListener('click', removeFocusedClass);
     document.addEventListener('focusout', removeFocusedClass);
 }
+
+/**
+ * Validate if a JSON string is well formatted
+ * @param {string} str the string to test
+ * @returns {bollean} true if the JSON is valid, false otherwise
+ */
+function isJsonString(str: string): boolean {
+    try {
+        if (str !== '') {
+            JSON.parse(str);
+        } else {
+            return false;
+        }
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+export { manageKeyboardFocus, isJsonString };
