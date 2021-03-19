@@ -81,13 +81,13 @@
                 class="llwp-map"
                 data-leaflet="{'name': 'Web Mercator', 'projection': 3857, 'zoom': 4, 'center': [60,-100], 'language': 'en-CA', 'basemapOptions': { 'id': 'transport', 'shaded': false } ,
             'layers':[
-                { 'url': 'https://webservices.maps.canada.ca/arcgis/services/StatCan/census_subdivisions_2016_en/MapServer/WMSServer', 'type': 'ogcWMS', 'entries': '0' } ,
-                { 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NRCAN/Investing_Energy_Canada_en/MapServer', 'type': 'esriDynamic', 'entries': '0, 2' } ,
-                { 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/GSCC/Geochronology/MapServer', 'type': 'esriDynamic', 'entries': '0' } ,
-                { 'url': './geojson/lines.json', 'type': 'geoJSON' } ,
-                { 'url': './geojson/points.json', 'type': 'geoJSON' } ,
-                { 'url': './geojson/polygons.json', 'type': 'geoJSON' } ,
-                { 'url': 'https://geo.weather.gc.ca/geomet', 'type': 'ogcWMS', 'entries': 'RAQDPS-FW.CE_PM2.5-DIFF-YAvg' }
+                { 'name': 'Census', 'url': 'https://webservices.maps.canada.ca/arcgis/services/StatCan/census_subdivisions_2016_en/MapServer/WMSServer', 'type': 'ogcWMS', 'entries': '0' } ,
+                { 'name': 'Energy', 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NRCAN/Investing_Energy_Canada_en/MapServer', 'type': 'esriDynamic', 'entries': '0, 2' } ,
+                { 'name': 'Geochron', 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/GSCC/Geochronology/MapServer', 'type': 'esriDynamic', 'entries': '0' } ,
+                { 'name': 'GeoJOSN - line', 'url': './geojson/lines.json', 'type': 'geoJSON' } ,
+                { 'name': 'GeoJSON - point', 'url': './geojson/points.json', 'type': 'geoJSON' } ,
+                { 'name': 'GeoJSON - polygon', 'url': './geojson/polygons.json', 'type': 'geoJSON' } ,
+                { 'name': 'Geomet', 'url': 'https://geo.weather.gc.ca/geomet', 'type': 'ogcWMS', 'entries': 'RAQDPS-FW.CE_PM2.5-DIFF-YAvg' }
             ]}"
             ></div>
             <p>Use to display a map like a thumbnail with minimun functions.</p>
