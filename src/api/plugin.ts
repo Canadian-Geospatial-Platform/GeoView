@@ -30,15 +30,6 @@ export class Plugin {
     plugins: Record<string, PluginType> = {};
 
     /**
-     * Load internal plugins
-     */
-    loadInternalPlugins = () => {
-        this.addPlugin('test-plugin', null, {
-            mapId: 'UC1',
-        });
-    };
-
-    /**
      * Add new plugin
      *
      * @param {string} id the plugin id
@@ -52,7 +43,7 @@ export class Plugin {
             // create new instance of the plugin
             plugin = new constructor();
         } else {
-            const InstanceConstructor = (await import(`../plugins/${id}/index.ts`)).default;
+            const InstanceConstructor = (await import(`../plugins/${id}/index.tsx`)).default;
             plugin = new InstanceConstructor();
         }
 

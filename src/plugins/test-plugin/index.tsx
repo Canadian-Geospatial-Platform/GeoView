@@ -6,7 +6,7 @@ import TestPluginComponent from './test-plugin';
  */
 class TestPlugin {
     // store the created button panel object
-    panel: unknown;
+    buttonPanel: unknown;
 
     /**
      * translations object to inject to the viewer translations
@@ -37,12 +37,14 @@ class TestPlugin {
         const panel = {
             title: this.translations[language].testMessage,
             icon: '<i class="material-icons">map</i>',
-            content: TestPluginComponent,
             width: 200,
         };
 
         // create a new button panel on the appbar
-        this.panel = api.map(mapId).createAppbarPanel(button, panel, null);
+        this.buttonPanel = api.map(mapId).createAppbarPanel(button, panel, null);
+
+        // set the content of the panel
+        this.buttonPanel.panel.changeContent(<TestPluginComponent mapId={mapId} panel={this.buttonPanel} />);
     };
 
     /**

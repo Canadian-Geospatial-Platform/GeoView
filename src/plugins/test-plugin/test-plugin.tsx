@@ -3,8 +3,8 @@
  *
  * @returns the react jsx element
  */
-const TestPluginComponent = (): JSX.Element => {
-    return <div>Test Plugin</div>;
+const TestPluginComponent = (props): JSX.Element => {
+    return <div>{props.mapId}</div>;
 };
 
 export default TestPluginComponent;

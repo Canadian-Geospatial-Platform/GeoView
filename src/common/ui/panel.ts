@@ -1,3 +1,5 @@
+import { createElement } from 'react';
+
 import { api } from '../../api/api';
 import { EVENT_NAMES } from '../../api/event';
 
@@ -66,7 +68,7 @@ export class Panel {
         this.type = panel.type;
         this.title = panel.title;
         this.icon = panel.icon;
-        this.content = panel.content;
+        this.content = panel.content !== undefined && panel.content !== null ? panel.content : createElement('div');
         this.status = panel.status !== undefined && panel.status !== null ? panel.status : false;
         this.width = panel.width;
     }
@@ -114,6 +116,25 @@ export class Panel {
                 icon,
                 action,
             },
+        });
+
+        return this;
+    };
+
+    /**
+     * Change the content of the panel
+     *
+     * @param {React Element} content the content to update to
+     *
+     * @returns this panel
+     */
+    changeContent = (content: React.ReactNode | Element): Panel => {
+        this.content = content;
+
+        api.event.emit(EVENT_NAMES.EVENT_PANEL_CHANGE_CONTENT, api.selectedMapInstance.id, {
+            handlerId: api.selectedMapInstance.id,
+            buttonId: this.buttonId,
+            content,
         });
 
         return this;

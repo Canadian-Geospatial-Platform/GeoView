@@ -119,7 +119,7 @@ export class Config {
         const layers: LayerConfig[] = tmpConfig.layers;
 
         // recreate the prop object to remove unwanted items and check if same as original. Log the modifications
-        const validConfig: MapConfigProps = { id, projection, zoom, center, language, basemapOptions, layers };
+        const validConfig: MapConfigProps = { id, projection, zoom, center, language, basemapOptions, layers, plugins: tmpConfig.plugins };
         this.logModifs(tmpConfig, validConfig);
 
         return validConfig;

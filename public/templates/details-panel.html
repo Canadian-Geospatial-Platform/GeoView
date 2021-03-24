@@ -64,7 +64,7 @@
             }
         </style>
 
-        <script src="./plugins/details-panel/details-panel.js"></script>
+        <!-- <script src="./plugins/details-panel/details-panel.js"></script> -->
     </head>
     <body>
         <div calss="header-table">
@@ -101,7 +101,7 @@
                 { 'url': 'https://webservices.maps.canada.ca/arcgis/services/StatCan/census_subdivisions_2016_en/MapServer/WMSServer', 'type': 'ogcWMS', 'entries': '0' } ,
                 { 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NACEI/energy_infrastructure_of_north_america_en/MapServer', 'type': 'esriDynamic', 'entries': '4, 5, 10' } ,
                 { 'url': 'https://geoappext.nrcan.gc.ca/arcgis/rest/services/NACEI/energy_infrastructure_of_north_america_en/MapServer/1', 'type': 'esriFeature' }
-            ]}"
+            ], 'plugins': ['details-panel']}"
             ></div>
             <p>This map is in WM projection with an English interface.</p>
         </div>
@@ -110,9 +110,9 @@
             cgpv.init(function () {
                 console.log('api is ready');
 
-                cgpv.api.addPlugin('detailsPanel', window.plugins['detailsPanel'], {
-                    mapId: 'mapWM',
-                });
+                // cgpv.api.addPlugin('detailsPanel', window.plugins['detailsPanel'], {
+                //     mapId: 'mapWM',
+                // });
             });
         </script>
     </body>
